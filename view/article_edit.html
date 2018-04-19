@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>编辑文章</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    
+</head>
+<body>
+    <h1>写文章</h1>
+    <hr>
+    <form method="POST" id="article-form" method="POST" action="/article/add">
+        <span>标题：</span><input type="text" name="title" /><br/>
+        <span>标签：</span><input type="text" name="tags" /><br/>
+        <textarea id="markdown-editor"></textarea> <br/>
+        <input type="hidden" name="content" id="content"/>
+        <button onclick="publish()">发表</button>&nbsp;
+        <button onclick="draft()">存草稿</button>
+    </form>
+    <script>
+        var simplemde = new SimpleMDE({
+            element : document.getElementById("markdown-editor")
+        });
+        
+        function publish(){
+            $('#content').val(simplemde.value());
+            $('#article-form').attr('action', '/article/add?way=draft');
+            $('#article-form').submit();
+        }
+        function draft(){
+            $('#content').val(simplemde.value());
+            var form = $('#article-form');
+            form.attr('action', '/article/add?way=draft');
+            form.submit();
+        }
+    </script>
+</body>
+</html>
