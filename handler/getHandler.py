@@ -2,6 +2,7 @@
 from init import VIEW_PATH
 import handler.handler as handler
 import urllib
+import json
 from db.DB import db
 import os
 
@@ -12,8 +13,31 @@ def getHandler(environ):
     print("pathinfo 是："+pathinfo)
     if pathinfo == '/user/register':
         return handler.return_html('register')
+    elif pathinfo == '/article/list':
+        return handler.return_html('article_list')
+    
+    elif pathinfo == '/api/user/list':
+        db.connect('blog')
+        sql = """
+            select userid,username,email,create_time,valid
+            from user
+        """
+        rows = db.find_sql(sql)
+        str = json.dumps(rows)
+        return [bytes(str,"utf-8")]
+    elif pathinfo == '/api/article/list':
+        db.connect('blog')
+        sql = """
+            select articleid,title,tags,likes_num,dislikes_num,mark,create_time,valid
+            from article
+        """
+        rows = db.find_sql(sql)
+        str = json.dumps(rows)
+        return [bytes(str,"utf-8")]
     elif pathinfo == '/article/edit':
         return handler.return_html('article_edit')
+    elif pathinfo == '/user/list':
+        return handler.return_html('user_list')
     elif pathinfo == '/':
         return handler.return_html('index')  
     elif pathinfo == '/user/login':

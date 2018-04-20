@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>用户管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
+</head>
+<body>
+    <h1>用户列表</h1>
+    <hr>
+    <table id="userlist" border="1px">
+        <tr>
+            <th>用户编号</th>
+            <th>用户名</th>
+            <th>邮箱</th>
+            <th>注册时间</th>
+            <th>是否有效</th>
+        </tr>
+        <tr v-for="item in items">
+            <td v-for="value in item">{{value}}</td>
+        </tr>
+    </table>
+</body>
+<script>
+    var vm = new Vue({
+        el : '#userlist',
+        data : {items:[]},
+        created : function(){
+            this.$http.get("http://localhost/api/user/list").then(function(data){
+                this.items = data.body;
+            });
+        }
+    });
+</script>
+</html>

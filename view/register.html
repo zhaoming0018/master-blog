@@ -2,16 +2,48 @@
 
 <head>
     <meta charset="utf-8">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function check(){
+            // 用户名6-20位大小写字母或下划线
+            var username = $("[name='username']").val();
+            var password = $("[name='password']").val();
+            var confirm = $("[name='confirm']").val();
+            var email = $("[name='email']").val();
+            if(!(/^[a-zA-Z][a-zA-Z0-9_]{4,20}$/.test(username))){
+                alert("用户名格式不正确");
+                return false;
+            }
+            // 用户名6-20位大小写字母或下划线
+            if(!(/^[a-zA-Z0-9_]{5,20}$/.test(password))){
+                alert("密码格式不正确");
+                return false;
+            }
+            if(password != confirm){
+                alert("两次输入密码不一致");
+                return false;
+            }
+            if(!(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email))){
+                alert("邮件格式不正确");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 
 <body>
-    <form action="/user/doRegister" method="POST">
+    <h1>注册用户</h1>
+    <hr>
+    <form action="/user/doRegister" method="POST" onsubmit="return check()" id="register-form">
         用户名：
-        <input type="text" name="username" />
+        <input type="text" name="username"/>
         <br/> 密码：
         <input type="text" name="password">
         <br/> 确认密码：
         <input type="text" name="confirm">
+        <br/> 邮箱：
+        <input type="text" name="email">
         <br/>
         <input type="submit" value="注册">
     </form>

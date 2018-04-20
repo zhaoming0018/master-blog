@@ -9,7 +9,6 @@ class DB:
         pass
     
     def __del__(self):
-        self.conn.close()
         self.conn = None
 
     """
