@@ -5,12 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>展示文章</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-    <h1>%s</h1>
-    <hr>
-    作者：%s&nbsp;&nbsp;时间：%s<br/>
-    <hr>
-    %s
+    <div id="article-container">
+        <h1>{{content[0]}}</h1>
+        <hr>
+        作者：{{content[1]}}&nbsp;&nbsp;时间：{{content[2]}}<br/>
+        <hr>
+            <div id="content">
+            <span v-html="markContent"></span>
+            </div>
+    </div>
+    
 </body>
+<script>
+    function GetRequest() { 
+        var url = location.search; //获取url中"?"符后的字串 
+        var theRequest = new Object(); 
+        if (url.indexOf("?") != -1) { 
+        var str = url.substr(1); 
+        strs = str.split("&"); 
+        for(var i = 0; i < strs.length; i ++) { 
+        theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]); 
+        } 
+        } 
+        return theRequest; 
+    } 
+    new Vue({
+        el : "#article-container",
+        data : {content:{}},
+        created : function(){
+            this.$http.get("http://localhost/api/article/show?id="+GetRequest()['id']).then(function(data){
+                this.content = data.body;
+            });
+        },
+        computed : {
+            markContent : function(){
+                return marked(this.content[3])
+            }
+        }
+    });
+</script>
 </html>

@@ -44,16 +44,18 @@ def getHandler(environ):
         return handler.return_html('login')
     elif pathinfo == '/user/aaa':
         return handler.return_html('aaa')
-    elif pathinfo == '/article/show':
+    elif pathinfo == '/api/article/show':
         articleid = parse_query['id'][0]
         db.connect("blog")
         sql = """
             SELECT TITLE,AUTHORID,CREATE_TIME,CONTENT 
             FROM ARTICLE
             WHERE ARTICLEID = %s
-            """ % articleid
-        result = db.find_sql(sql)
-        print(result)
-        return handler.return_html('article_show',result[0])
+        """ % articleid
+        rows = db.find_sql(sql)
+        str = json.dumps(rows[0])
+        return [bytes(str,"utf-8")]
+    elif pathinfo == '/article/show':
+        return handler.return_html('article_show')
     else:
         return [bytes("","utf-8")]

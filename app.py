@@ -4,6 +4,7 @@ from handler.application import application
 from init import PORT
 from batch.create_db import create_database_blog
 import sys
+from optparse import OptionParser
 
 
 def main():
