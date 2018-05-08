@@ -1,15 +1,15 @@
 # -*- coding:utf-8 -*-
 from wsgiref.simple_server import make_server
 from handler.application import application
-from init import PORT
+import init
 from batch.create_db import create_database_blog
 import sys
 from optparse import OptionParser
 
 
 def main():
-    httpd = make_server('', PORT, application)
-    print('Serving HTTP on port %s...' % PORT)
+    httpd = make_server('', init.PORT, application)
+    print('Serving HTTP on port %s...' % init.PORT)
     httpd.serve_forever()
 
 

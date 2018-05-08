@@ -35,7 +35,7 @@
         
         function publish(){
             $('#content').val(simplemde.value());
-            $('#article-form').attr('action', '/article/add?way=draft');
+            $('#article-form').attr('action', '/article/add?way=publish');
             $('#article-form').submit();
         }
         function draft(){

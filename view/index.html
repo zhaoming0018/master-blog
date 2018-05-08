@@ -3,9 +3,11 @@
     <head>
         <meta charset="utf-8">
         <title>赵艺茗的博客</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/css/swiper.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.0.2/js/swiper.min.js"></script>
         <style>
             .nav-wrap{
-                width: 1001px;
+                width: 1000px;
                 margin: 0 auto;
                 border-radius: 5px;
                 height: 50px;
@@ -13,8 +15,41 @@
                 margin-top: 5px;
                 box-shadow: 2px 2px 2px #bdbdbd;
             }
+            .nav-wrap li{
+                list-style-type: none;
+                
+            }
+            .nav-wrap a{
+                margin: 0 2px;
+                float: left;
+                width : 15%;
+                height: 50px;
+                vertical-align: middle;
+                display: inline-block;
+                line-height: 50px;
+                text-align: center;
+                text-decoration: none;
+                color: whitesmoke; 
+            }
+
+            .nav-wrap li :hover{
+                background-color: red;
+            }
+            
             body {
                 background-color: #eee
+            }
+
+            .swiper-container {
+                width: 1000px;
+                height: 500px;
+            } 
+            .gradual{
+                width: 100%;
+                height: 30px;
+                display: block;
+                background: linear-gradient(to bottom, #888888 , white);
+                opacity: 0.5;
             }
         </style>
     </head>
@@ -23,8 +58,57 @@
             <h1>用努力筑梦未来</h1>
             <hr>
             <nav class="nav-wrap">
+                <ul>
+                    <li><a href="#">数据库</a></li>
+                    <li><a href="#">数据库</a></li>
+                    <li><a href="#">数据库</a></li>
+                    <li><a href="#">数据库</a></li>
+                    <li><a href="#">数据库</a></li>
+                </ul>
                 
             </nav>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" style="background: red;">
+                        <span class="gradual">热烈庆祝哈工大运动会胜利召开！</span>
+                    </div>
+                    <div class="swiper-slide" style="background: snow">
+                        <span class="gradual">热烈庆祝哈工大运动会胜利召开！</span>
+                    </div>
+                    <div class="swiper-slide" style="background: teal">Slide 3</div>
+                </div>
+                <!-- 如果需要分页器 -->
+                <div class="swiper-pagination"></div>
+                
+                <!-- 如果需要导航按钮 -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                
+                <!-- 如果需要滚动条 -->
+                <div class="swiper-scrollbar"></div>
+            </div>
         </div>
     </body>
+    <script>        
+        var mySwiper = new Swiper ('.swiper-container', {
+          //direction: 'vertical',
+          loop: true,
+        
+          // 如果需要分页器
+          pagination: {
+            el: '.swiper-pagination',
+          },
+          
+          // 如果需要前进后退按钮
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+          
+          // 如果需要滚动条
+        //   scrollbar: {
+        //     el: '.swiper-scrollbar',
+        //   },
+        })        
+        </script>
 </html>

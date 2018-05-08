@@ -1,21 +1,32 @@
 # -*- coding:utf-8 -*-
 from init import VIEW_PATH
-import handler.handler as handler
+import handler.render as render
 import urllib
 import json
 from db.DB import db
 import os
 
-def getHandler(environ):
+def article_edit():
+    return render.return_html('article_edit')
+
+def routerRegister(router):
+    routers = {
+        "/article/edit" :  article_edit
+    }
+    return routers[router]()
+
+def getHandler(environ, response):
+    response('200 OK', [('Content-Type', 'text/html')])
     query_string = environ['QUERY_STRING']
     parse_query = urllib.parse.parse_qs(query_string)
     pathinfo = environ['PATH_INFO']
     print("pathinfo 是："+pathinfo)
     if pathinfo == '/user/register':
-        return handler.return_html('register')
+        return render.return_html('register')
     elif pathinfo == '/article/list':
-        return handler.return_html('article_list')
-    
+        return render.return_html('article_list')
+    elif pathinfo == '/article/modify':
+        return render.return_html('article_modify')
     elif pathinfo == '/api/user/list':
         db.connect('blog')
         sql = """
@@ -35,15 +46,15 @@ def getHandler(environ):
         str = json.dumps(rows)
         return [bytes(str,"utf-8")]
     elif pathinfo == '/article/edit':
-        return handler.return_html('article_edit')
+        return routerRegister(pathinfo)
     elif pathinfo == '/user/list':
-        return handler.return_html('user_list')
+        return render.return_html('user_list')
     elif pathinfo == '/':
-        return handler.return_html('index')  
+        return render.return_html('index')  
     elif pathinfo == '/user/login':
-        return handler.return_html('login')
+        return render.return_html('login')
     elif pathinfo == '/user/aaa':
-        return handler.return_html('aaa')
+        return render.return_html('aaa')
     elif pathinfo == '/api/article/show':
         articleid = parse_query['id'][0]
         db.connect("blog")
@@ -52,10 +63,21 @@ def getHandler(environ):
             FROM ARTICLE
             WHERE ARTICLEID = %s
         """ % articleid
-        rows = db.find_sql(sql)
+        rows = db.find_dict(sql)
+        str = json.dumps(rows[0])
+        return [bytes(str,"utf-8")]
+    elif pathinfo == '/api/article/get':
+        articleid = parse_query['id'][0]
+        db.connect("blog")
+        sql = """
+            SELECT TITLE,TAGS,AUTHORID,CREATE_TIME,CONTENT 
+            FROM ARTICLE
+            WHERE ARTICLEID = %s
+        """ % articleid
+        rows = db.find_dict(sql)
         str = json.dumps(rows[0])
         return [bytes(str,"utf-8")]
     elif pathinfo == '/article/show':
-        return handler.return_html('article_show')
+        return render.return_html('article_show')
     else:
         return [bytes("","utf-8")]

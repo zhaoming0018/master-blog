@@ -22,11 +22,14 @@
             <th>创建时间</th>
             <th>是否有效</th>
             <th>预览</th>
+            <th>修改</th>
         </tr>
         <tr v-for="item in items">
             <td v-for="value in item">{{value}}</td>
             <td><a :href="'/article/show?id='+item[0]">查看</a></td>
+            <td><a :href="'/article/modify?id='+item[0]">修改</a></td>
         </tr>
+        <a href="/article/edit">添加文章</a>
     </table>
 </body>
 <script>

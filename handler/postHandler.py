@@ -4,8 +4,10 @@ import json
 import urllib
 import sqlite3
 from db.DB import db
-def postHandler(environ):
+import HTMLParser
+def postHandler(environ, response):
     # 做GET和POST请求的解析
+    response('200 OK', [('Content-Type', 'text/html')])
     query_string = environ['QUERY_STRING']
     parse_query = urllib.parse.parse_qs(query_string)
     parse_body = {} 
@@ -27,12 +29,29 @@ def postHandler(environ):
         mark = 'HOT'
         sql = """
             INSERT INTO ARTICLE(CREATE_TIME,TITLE,TAGS,AUTHORID,CONTENT,MARK)
-             VALUES (datetime('now', 'localtime'), '%s', '%s', %s, '%s', '%s')
+             VALUES (datetime('now', 'localtime'), "%s", "%s", %s, "%s", "%s")
              """ % (title, tags, authorid, content, mark)
         db.connect('blog')
         db.execute_sql(sql)
         result = 'ok'
-    if pathinfo == '/user/doRegister':
+
+    elif pathinfo == '/article/modify':
+        title = parse_body['title'][0]
+        tags = parse_body['tags'][0]
+        authorid = 0
+        content = parse_body['content'][0]
+        articleid = parse_body['articleid'][0]
+        mark = 'HOT'
+        sql = """
+            UPDATE ARTICLE 
+            SET TITLE="%s", TAGS="%s", CONTENT="%s", MARK="%s"
+            WHERE ARTICLEID=%s
+             """ % (title, tags, content, mark, articleid)
+        db.connect('blog')
+        db.execute_sql(sql)
+        result = 'ok'
+
+    elif pathinfo == '/user/doRegister':
         username = parse_body['username'][0]
         password = parse_body['password'][0]
         confirm  = parse_body['confirm'][0]
@@ -47,7 +66,7 @@ def postHandler(environ):
         else :
             result = "NO"
         
-    if pathinfo == '/user/doLogin':
+    elif pathinfo == '/user/doLogin':
         username = parse_body['username'][0]
         password = parse_body['password'][0]
         # 数据库查找信息

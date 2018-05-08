@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>编辑文章</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
+    <style>
+        #wrap{
+            margin: 0 auto;
+        }
+    
+    </style>
+</head>
+<body>
+    <h1>写文章</h1>
+    <hr>
+    <div id="wrap">
+    <form method="POST" id="article-form" method="POST" action="/article/add">
+        <span>标题：</span><input type="text" name="title" v-model="data['TITLE']"/><br/>
+        <span>标签：</span><input type="text" name="tags" v-model="data['TAGS']"/><br/>
+        <textarea id="markdown-editor"></textarea> <br/>
+        <input type="hidden" name="content" id="content" v-model="content"/>
+        <input type="hidden" name="articleid" id="articleid" v-model="articleid"/>
+        <button onclick="publish()">发表</button>&nbsp;
+        <button onclick="draft()">存草稿</button>
+    </form>
+    </div>
+    <script>
+        function GetRequest() { 
+            var url = location.search; //获取url中"?"符后的字串 
+            var theRequest = new Object(); 
+            if (url.indexOf("?") != -1) { 
+            var str = url.substr(1); 
+            strs = str.split("&"); 
+            for(var i = 0; i < strs.length; i ++) { 
+            theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]); 
+            } 
+            } 
+            return theRequest; 
+        } 
+        
+        
+        function publish(){
+            $('#article-form').attr('action', '/article/modify?way=publish');
+            $('#article-form').submit();
+        }
+        function draft(){
+            var form = $('#article-form');
+            form.attr('action', '/article/modify?way=draft');
+            form.submit();
+        }
+        
+        var vm = new Vue({
+            el : "#wrap",
+            data : {
+                data : [],
+                simplemde : null,
+                articleid: null,
+                content : null
+            },
+            created : function(){
+            this.articleid = parseInt(GetRequest()['id']);
+            this.$http.get("http://localhost/api/article/get?id="+GetRequest()['id']).then(function(data){
+                this.data = data.body;
+                this.simplemde = new SimpleMDE({
+                    element : document.getElementById("markdown-editor")
+                });
+                this.simplemde.value(this.data["CONTENT"]);
+                this.content = this.data["CONTENT"];
+                var that = this;
+                this.simplemde.codemirror.on("change",function(){
+                    that.content = that.simplemde.value();
+                });
+            });
+            
+        },
+        });
+    </script>
+</body>
+</html>

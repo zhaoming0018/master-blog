@@ -17,19 +17,16 @@ class DB:
     """
     def connect(self, dbname):
         # 检查数据库名和连接状态
-        url = ''
+        url = os.path.join(DB_PATH, dbname+ '.db3')
         if dbname == self.dbname:
             if self.conn == None:
-                url = os.path.join(DB_PATH, dbname+ '.db3')
                 self.conn = sqlite3.connect(url)
         else:
             if self.conn == None:
                 self.dbname = dbname
-                url = os.path.join(DB_PATH, dbname+ '.db3')
                 self.conn = sqlite3.connect(url)
             else:
                 self.conn.close()
-                url = os.path.join(DB_PATH, dbname+ '.db3')
                 self.conn = sqlite3.connect(url) 
 
         print("连接到数据库文件：%s" % url)
@@ -38,6 +35,7 @@ class DB:
         cur = self.conn.cursor()
         cur.execute(sql)
         self.conn.commit()
+        print(sql)
     
     def find_sql(self, sql):
         cur = self.conn.cursor()
@@ -46,6 +44,24 @@ class DB:
         for row in c:
             result.append(row)
         self.conn.commit()
+        print(sql)
+        return result
+
+    def dict_factory(self, cursor, row): 
+        d = {} 
+        for idx, col in enumerate(cursor.description): 
+            d[col[0]] = row[idx] 
+        return d
+
+    def find_dict(self, sql):
+        self.conn.row_factory = self.dict_factory
+        cur = self.conn.cursor()
+        c = cur.execute(sql)
+        result = [] 
+        for row in c:
+            result.append(row)
+        self.conn.commit()
+        print(sql)
         return result
 
     

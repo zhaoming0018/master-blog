@@ -12,9 +12,9 @@
 </head>
 <body>
     <div id="article-container">
-        <h1>{{content[0]}}</h1>
+        <h1>{{article.TITLE}}</h1>
         <hr>
-        作者：{{content[1]}}&nbsp;&nbsp;时间：{{content[2]}}<br/>
+        作者：{{article.AUTHORID}}&nbsp;&nbsp;时间：{{article.CREATE_TIME}}<br/>
         <hr>
             <div id="content">
             <span v-html="markContent"></span>
@@ -35,17 +35,17 @@
         } 
         return theRequest; 
     } 
-    new Vue({
+    var vm = new Vue({
         el : "#article-container",
-        data : {content:{}},
+        data : {article:{}},
         created : function(){
             this.$http.get("http://localhost/api/article/show?id="+GetRequest()['id']).then(function(data){
-                this.content = data.body;
+                this.article = data.body;
             });
         },
         computed : {
             markContent : function(){
-                return marked(this.content[3])
+                return marked(this.article.CONTENT?this.article.CONTENT:"")
             }
         }
     });
